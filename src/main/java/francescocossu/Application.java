@@ -20,6 +20,35 @@ public class Application {
 
     }
 
+
+    public static void selezionaOpzioneLibreria(List<Lettura> libreria) {
+        while (true) {
+
+
+            System.out.println("Seleziona 1 per aggiungere un libro o rivista, 2 per rimuovere un libro o rivista, 3 per cercare un libro o rivista, 4 per salvare/caricare o 0 per uscire");
+            String response = scanner.nextLine();
+            if (response.equals("0")) {
+                break;
+            }
+            switch (response) {
+                case "1":
+                    sceltaLibroRiv(libreria);
+                    break;
+                case "2":
+
+                    break;
+                case "3":
+
+                    break;
+                case "4":
+
+                    break;
+                default:
+                    System.out.println("Risposta non valida, inserire 0, 1, 2, 3 o 4.");
+            }
+        }
+    }
+
     public static void sceltaLibroRiv(List<Lettura> libreria) {
         System.out.println("Quale tipo di lettura vuoi inserire? 1-Libro / 2-Rivista");
         String risposta2 = scanner.nextLine();
@@ -143,5 +172,23 @@ public class Application {
         libreria.add(nuovaRivista);
 
         System.out.println("Rivista aggiunta all'archivio!");
+    }
+
+    public static void rimuoviLettura(List<Lettura> libreria) {
+        System.out.println("Inserisci l'ISBN della lettura da rimuovere: ");
+        String isbn = scanner.nextLine();
+        int indexToRemove = -1;
+        for (int i = 0; i < libreria.size(); i++) {
+            Lettura lettura = libreria.get(i);
+            if (lettura.getISBN().equals(isbn)) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove != -1) {
+            libreria.remove(indexToRemove);
+        } else {
+            System.out.println("Lettura non trovata.");
+        }
     }
 }
