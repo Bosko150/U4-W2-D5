@@ -28,7 +28,13 @@ public abstract class Lettura {
     public int getNumeroPagine() {
         return numeroPagine;
     }
-    
+
+
+    @Override
+    public String toString() {
+        return "Lettura--- ISBN= " + ISBN + ", titolo= " + titolo + ", anno pubblicazione= " + annoPubblicazione
+                + ", pagine=" + numeroPagine + " ";
+    }
 }
 
 
