@@ -285,7 +285,7 @@ public class Application {
         String ISBN = scanner.nextLine();
         Optional<Lettura> letturaISBN = libreria.stream().filter(lettura -> lettura.getISBN().equals(ISBN)).findFirst();
         if (letturaISBN.isPresent()) {
-            System.out.println("La lettura corrispondente a questo ISBN è " + letturaISBN.get().toString());
+            System.out.println("La lettura corrispondente a questo ISBN è " + letturaISBN.get());
         } else {
             System.out.println("L'ISBN non corrisponde a nessuna lettura presente nell'archivio.");
         }
@@ -301,11 +301,11 @@ public class Application {
     public static void salvataggioSuDisco(List<Lettura> libreria) {
         File file = new File("src/main/java/francescocossu/entities/libreria.txt");
         try {
-            String testo = "";
+            StringBuilder testo = new StringBuilder();
             for (Lettura lettura : libreria) {
-                testo += lettura.toString() + "#";
+                testo.append(lettura.toString()).append("#");
             }
-            FileUtils.writeStringToFile(file, testo, "UTF-8");
+            FileUtils.writeStringToFile(file, testo.toString(), "UTF-8");
             System.out.println("File salvato con successo");
         } catch (IOException e) {
             System.out.println("Errore durante il salvataggio del file");
@@ -315,14 +315,14 @@ public class Application {
 
 
     //caricamento della lista semplice perchè quello con oggetti era troppo complesso :(
-    public static ArrayList leggiDaDisco() {
+    public static void leggiDaDisco() {
         File file = new File("src/main/java/francescocossu/entities/libreria.txt");
         try {
             String letture = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             ArrayList<String> lettureList = new ArrayList<>(Arrays.asList(letture.split("#")));
             System.out.println("Prodotti caricati: " + lettureList);
 
-            return lettureList;
+            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
