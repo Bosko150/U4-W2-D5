@@ -33,7 +33,7 @@ public abstract class Lettura {
     @Override
     public String toString() {
         return "Lettura--- ISBN= " + ISBN + ", titolo= " + titolo + ", anno pubblicazione= " + annoPubblicazione
-                + ", pagine=" + numeroPagine + " ";
+                + ", pagine= " + numeroPagine + " ";
     }
 }
 

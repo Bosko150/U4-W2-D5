@@ -4,25 +4,31 @@ import francescocossu.entities.Lettura;
 import francescocossu.entities.Libro;
 import francescocossu.entities.Periodicità;
 import francescocossu.entities.Rivista;
+import org.apache.commons.io.FileUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Application {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        //libreria pre-compilata
-        List<Lettura> libreria = new ArrayList<Lettura>();
+
+        selezionaOpzioneLibreria(compilaLibreria());
+
+    }
+
+    public static List<Lettura> compilaLibreria() {
+        List<Lettura> libreria = new ArrayList<>();
 
         Libro mobyDick = new Libro("00001", "Moby Dick", 1851, 1036, "Herman Melville", "Romanzo");
         Libro harryPotter = new Libro("00002", "Harry Potter", 1997, 223, "J.K. Rowling", "Fantasy");
         Libro theHobbit = new Libro("00003", "The Hobbit", 1937, 295, "J.R.R. Tolkien", "Fantasy");
         Libro theLordOfTheRings = new Libro("00004", "The Lord of the Rings", 1954, 1178, "J.R.R. Tolkien", "Fantasy");
-        Libro leAvventureDiPinocchio = new Libro("00005", "Pinocchio", 1940, 167, "Carlo Collodi", "Romanzo");
+        Libro leAvventureDiPinocchio = new Libro("00005", "Le Avventure di Pinocchio", 1940, 167, "Carlo Collodi", "Romanzo");
         Rivista Focus = new Rivista("00005", "Focus", 1997, 32, Periodicità.SETTIMANALE);
         Rivista TheGuardian = new Rivista("00006", "The Guardian", 2019, 32, Periodicità.MENSILE);
         Rivista TheNewYorkTimes = new Rivista("00007", "The New York Times", 2019, 32, Periodicità.SEMESTRALE);
@@ -38,9 +44,12 @@ public class Application {
         libreria.add(TheNewYorkTimes);
         libreria.add(Forbes);
 
-
-        selezionaOpzioneLibreria(libreria);
-
+        System.out.println("Ecco una lista dei libri presenti nell'archivio:");
+        for (Lettura l : libreria) {
+            System.out.println(l.toString());
+        }
+        System.out.println("---------------------------------------------------------------------------------------------");
+        return libreria;
     }
 
 
@@ -61,19 +70,37 @@ public class Application {
                     rimuoviLettura(libreria);
                     break;
                 case "3":
-                    System.out.println("Inserisci il parametro da cercare: 1-Anno 2-Autore");
+                    System.out.println("Inserisci il parametro da cercare: 1-Anno 2-Autore 3-ISBN");
                     String risposta = scanner.nextLine();
-                    if (risposta.equals("1")) {
-                        ricercaAnnoPubblicazione(libreria);
-                    } else if (risposta.equals("2")) {
-                        ricercaAutore(libreria);
+                    switch (risposta) {
+                        case "1":
+                            ricercaAnnoPubblicazione(libreria);
+                            break;
+                        case "2":
+                            ricercaAutore(libreria);
+                            break;
+                        case "3":
+                            ricercaPerISBN(libreria);
+                            break;
+                        default:
+                            System.out.println("Risposta non valida, inserire un numero da 1 a 3.");
                     }
                     break;
                 case "4":
                     stampaLibreria(libreria);
                     break;
+                case "5":
+                    System.out.println("Vuoi salvare o caricare la libreria? 1-Salva 2-Carica");
+                    String risposta3 = scanner.nextLine();
+                    if (risposta3.equals("1")) {
+                        salvataggioSuDisco(libreria);
+                    } else if (risposta3.equals("2")) {
+                        leggiDaDisco();
+                    }
+
+                    break;
                 default:
-                    System.out.println("Risposta non valida, inserire 0, 1, 2, 3 o 4.");
+                    System.out.println("Risposta non valida, inserire un numero da 0 a 5.");
             }
         }
     }
@@ -253,10 +280,51 @@ public class Application {
 
     }
 
+    public static void ricercaPerISBN(List<Lettura> libreria) {
+        System.out.println("Inserisci l'ISBN per la ricerca: ");
+        String ISBN = scanner.nextLine();
+        Optional<Lettura> letturaISBN = libreria.stream().filter(lettura -> lettura.getISBN().equals(ISBN)).findFirst();
+        if (letturaISBN.isPresent()) {
+            System.out.println("La lettura corrispondente a questo ISBN è " + letturaISBN.get().toString());
+        } else {
+            System.out.println("L'ISBN non corrisponde a nessuna lettura presente nell'archivio.");
+        }
+    }
+
     public static void stampaLibreria(List<Lettura> libreria) {
         System.out.println("Ecco la libreria: ");
         for (Lettura lettura : libreria) {
             System.out.println(lettura.toString());
+        }
+    }
+
+    public static void salvataggioSuDisco(List<Lettura> libreria) {
+        File file = new File("src/main/java/francescocossu/entities/libreria.txt");
+        try {
+            String testo = "";
+            for (Lettura lettura : libreria) {
+                testo += lettura.toString() + "#";
+            }
+            FileUtils.writeStringToFile(file, testo, "UTF-8");
+            System.out.println("File salvato con successo");
+        } catch (IOException e) {
+            System.out.println("Errore durante il salvataggio del file");
+        }
+
+    }
+
+
+    //caricamento della lista semplice perchè quello con oggetti era troppo complesso :(
+    public static ArrayList leggiDaDisco() {
+        File file = new File("src/main/java/francescocossu/entities/libreria.txt");
+        try {
+            String letture = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+            ArrayList<String> lettureList = new ArrayList<>(Arrays.asList(letture.split("#")));
+            System.out.println("Prodotti caricati: " + lettureList);
+
+            return lettureList;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
