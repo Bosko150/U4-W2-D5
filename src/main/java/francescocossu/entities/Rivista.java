@@ -2,7 +2,7 @@ package francescocossu.entities;
 
 public class Rivista extends Lettura {
 
-    private Periodicità periodicità;
+    private final Periodicità periodicità;
 
     public Rivista(String ISBN, String titolo, int annoPubblicazione, int numeroPagine, Periodicità periodicità) {
         super(ISBN, titolo, annoPubblicazione, numeroPagine);

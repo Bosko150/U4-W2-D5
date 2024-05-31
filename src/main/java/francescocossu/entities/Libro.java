@@ -2,8 +2,8 @@ package francescocossu.entities;
 
 public class Libro extends Lettura {
 
-    private String autore;
-    private String genere;
+    private final String autore;
+    private final String genere;
 
     public Libro(String ISBN, String titolo, int annoPubblicazione, int numeroPagine, String autore, String genere) {
         super(ISBN, titolo, annoPubblicazione, numeroPagine);

@@ -28,6 +28,7 @@ public abstract class Lettura {
     public int getNumeroPagine() {
         return numeroPagine;
     }
+    
 }
 
 
